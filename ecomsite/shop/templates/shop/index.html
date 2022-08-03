@@ -6,17 +6,51 @@
     <title>🏪 Shop</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   
-    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+<script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="{% static 'shop/style.css '%}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'shop/home.css '%}">
 </head>
 
 <body>
     <div class="container">
+
+        <div class="row">
+            <div class="col-md-12">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <a class="navbar-brand" href="#">Navbar</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                      <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                      <ul class="navbar-nav">
+                        <li class="nav-item active">
+                          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="#">Features</a>
+                        </li>
+                        <li class="nav-item">
+                            <button id='cart' data-html='true' type="button" class="btn btn-secondary" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Vivamus
+                            sagittis lacus vel augue laoreet rutrum faucibus.">
+                              Cart(0)
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link disabled" href="#">Disabled</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </nav>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-md-12">
                 <form class="card card-sm">
@@ -35,14 +69,14 @@
             {% for product in products %}
             <div class="col-md-3">
                 <div class="card">
-                    <img src="{{ product.image }}" class="card-img-top">
+                    <a href="/{{ product.id }}"> <img src="{{ product.image }}" class="card-img-top"> </a>
                     <div class="card-body">
-                        <div class="card-title">
-                            {{ product.name }}
+                        <div  class="card-title">
+                            <a id="name{{product.id}}" href="/{{ product.id }}">{{ product.name }}</a>
                         </div>
-                        <div class="card-text">
-                            $ {{ product.price }}
-                        </div>
+                        <div id="price{{product.id}}" class="card-text">{{ product.price }}</div>
+
+                        <button id="{{product.id}}" class="btn atc btn-warning">Add to Cart</button>
                     </div>
                 </div>
             </div>
@@ -72,5 +106,61 @@
         </div>
     </div>
 </body>
+<script type="text/javascript">
+    console.log('This is working');
+    if(localStorage.getItem('cart')==null){
+        var cart = {};
+    }
+    else{
+        cart = JSON.parse(localStorage.getItem('cart'));
+    }
 
+    $(document).on('click','.atc',function(){
+        console.log("The add to cart button is clicked");
+        var item_id = this.id.toString();
+        console.log(item_id);
+
+        
+
+        if(cart[item_id]!=null){
+            quantity=cart[item_id][0]+1;
+            cart[item_id][0]=quantity;
+            cart[item_id][2]=cart[item_id][2]+parseFloat(document.getElementById("price"+item_id).innerHTML);
+        }
+        else{
+            quantity=1;
+            price=parseFloat(document.getElementById("price"+item_id).innerHTML);
+            pro_name=document.getElementById("name"+item_id).innerHTML;
+            cart[item_id]=[quantity,pro_name,price];
+            
+        }
+        console.log(cart);
+        localStorage.setItem('cart',JSON.stringify(cart));
+
+        // document.getElementById('cart').innerHTML="Cart("+Object.keys(cart).length +")";
+        
+    });
+    // $(function () {
+    //     $('[data-toggle="popover"]').popover();
+    //     document.getElementById("cart").setAttribute('data-content',"<h5>This is the shopping cart!</h5>")
+    // });
+    document.getElementById('cart').innerHTML="Cart("+Object.keys(cart).length +")";
+    DisplayCart(cart);
+    function DisplayCart(cart){
+        var cartString ="";
+        cartString += "<h5>This is your cart</h5>";
+        var cartIndex = 1;
+        let cartObj=JSON.parse(localStorage.getItem('cart'))
+        for(var x in cartObj){
+            cartString += cartIndex;
+            cartString += cartObj[x][1] + "Qty:" + cartObj[x][0] + "</br>";
+            cartIndex+=1;
+        }
+ 
+        cartString += "<a href='/checkout'><button class='btn btn-warning' id='checkout'>Check Out</button></a>";
+        document.getElementById("cart").setAttribute('data-content',cartString);
+        $('[data-toggle="popover"]').popover();
+    }
+
+</script>
 </html>

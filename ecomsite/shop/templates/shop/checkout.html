@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  
+<script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <title>Check Out</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <ul id="list" class="list-group">
+                    
+                </ul>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <input type="hidden" id="items" name="items">
+                    <input type="hidden" id="total" name="total">
+                    <div class="form-row">
+                      <div class="form-group col-md-3">
+                        <label for="FirstName">First Name</label>
+                        <input id="FirstName" type="text" class="form-control" name="FirstName" >
+                      </div>
+                      <div class="form-group col-md-3">
+                        <label for="LastName">Last Name</label>
+                        <input id="LastName" type="text" class="form-control" name="LastName" >
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="example@email.com">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="address">Address</label>
+                      <input type="text" class="form-control" id="address" name="address" placeholder="1234 Main St">
+                    </div>
+                    <div class="form-group">
+                      <label for="address2">Address 2</label>
+                      <input type="text" class="form-control" id="address2" name="address2" placeholder="Apartment, studio, or floor">
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="city">City</label>
+                        <input type="text" class="form-control" id="city" name="city">
+                      </div>
+                      <div class="form-group col-md-4">
+                        <label for="state">State</label>
+                        <select id="state" class="form-control" name="state">
+                          <option selected>Choose...</option>
+                          <option>...</option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-2">
+                        <label for="zip">Zip</label>
+                        <input type="text" class="form-control" id="zip" name="zip">
+                      </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Place Order</button>
+                  </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    if(localStorage.getItem('cart')==null){
+        var cart={};
+    }
+    else{
+        cart=JSON.parse(localStorage.getItem('cart'));
+    }
+    let total=0;
+    for(item in cart){
+        let name=cart[item][1];
+        let quantity=cart[item][0];
+        let price=cart[item][2];
+        total+=price;
+        itemString=`<li class="list-group-item">${name} <span class=''>${quantity}</span> <span class='badge badge-warning badge-pill'>${price}</span> </li>`;
+        
+        $('#list').append(itemString);
+    }
+    totalPrice = ` <li class ="list-group-item d-flex justify-content-between align-items-center"><b>Total price</b>
+  ${total}</li> `
+    $('#total').val(total);
+    $('#list').append(totalPrice);
+    $('#items').val(JSON.stringify(cart));
+
+</script>
+</html>
