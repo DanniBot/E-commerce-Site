@@ -2,6 +2,8 @@ from django.shortcuts import render
 from .models import Order, Product
 from django.core.paginator import Paginator
 import strgen
+from django.contrib.auth.decorators import login_required
+from django.views.generic.detail import DetailView
 
 # Create your views here.
 
@@ -24,6 +26,11 @@ def detail(request,id):
     product_object=Product.objects.get(id=id)
     return render(request,'shop/detail.html',{'product_object':product_object})
 
+class ProductDetail(DetailView):
+    model=Product
+    template_name='shop/detail.html'
+
+@login_required
 def checkout(request):
     if request.method=='POST':
         number=strgen.StringGenerator("[\w\d]{10}").render()
